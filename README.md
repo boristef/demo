@@ -12,7 +12,7 @@ A natural language interface for querying global trade logistics performance dat
 ## 📺 Demo
 
 <!-- Paste your Loom/YouTube link below -->
-[Link to Demo Video](PLACEHOLDER)
+[Watch Demo Video](video/record_2026-02-05_22-54-29.mp4)
 
 ## 🛠️ Tech Stack
 
