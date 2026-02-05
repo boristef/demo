@@ -1,46 +1,106 @@
-# TradeXchange AI Assessment / TradeXchange AI 評估作業
+# TradeXchange AI
 
-Build a web UI where users ask natural language questions about trade data, an LLM converts them to SQL, and results display.
+A natural language interface for querying global trade logistics performance data (LPI). This project allows users to ask questions, which are converted into SQL queries by an AI model and executed against the dataset to produce tabular results.
 
-建立一個網頁介面，讓使用者用自然語言詢問貿易數據問題，由 LLM 轉換成 SQL 查詢，並顯示結果。
+## 🚀 Features
 
-## Database / 資料庫
+- **Natural Language to SQL**: Powered by **Google Gemini 2.0 Flash** via OpenRouter.
+- **Dynamic Data Querying**: Retrieves data from a Supabase PostgreSQL database.
+- **Friendly UI**: Modern, dark-mode interface built with React.
+- **Transparent Execution**: Displays both the generated SQL and the results for verification.
 
-Supabase (read-only / 唯讀):
-- URL: `https://bqyrjnpwiwldppbkeafk.supabase.co`
-- Anon key: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJxeXJqbnB3aXdsZHBwYmtlYWZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAyMzI0MDcsImV4cCI6MjA4NTgwODQwN30.JmzMN1xU_yhGzW4Ki_d6PpJqkTpVjDHA7dkyen4w6Rg`
-- Table / 資料表: `countries_lpi` (id, country, region, lpi_score, year)
+## 📺 Demo
 
-Note: The data contains some quality issues. / 注意：資料中包含一些品質問題。
+<!-- Paste your Loom/YouTube link below -->
+[Link to Demo Video](PLACEHOLDER)
 
-## AI
+## 🛠️ Tech Stack
 
-OpenRouter key (shared, rate-limited / 共用，有額度限制): `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`
+- **Frontend**: React, Vite, Vanilla CSS
+- **Backend**: Node.js, Express
+- **Database**: Supabase (PostgreSQL)
+- **AI/LLM**: OpenRouter API (Google Gemini 2.0 Flash)
+- **SQL Processing**: Alasql (In-memory SQL execution for read-only data adaptation)
 
-Use any model. Be efficient.
+## 🏗️ Architecture Note
 
-可使用任何模型，請節約使用。
+Due to the provided Supabase connection being read-only and restricted to PostgREST (without direct SQL execution capabilities via the network), this project implements a **Hybrid Execution Model**:
+1. The Backend fetches the `countries_lpi` dataset from Supabase using the standard client.
+2. The LLM generates standard SQL based on the user's question.
+3. The SQL is executed essentially "in-memory" against the fetched data using **Alasql**.
+This ensures that "Show me top 5..." or "Average by region..." queries work correctly even without direct raw SQL access to the DB engine.
 
-## Requirements / 需求
+## 📦 Setup & Installation
 
-Make these three queries work / 讓以下三個查詢能正常運作：
+### Prerequisites
+- Node.js (v18 or higher)
+- npm
 
-1. "Which countries in Asia have an LPI score above 3.0?" / 「亞洲有哪些國家的 LPI 分數高於 3.0？」
-2. "What's the average LPI score by region?" / 「各區域的平均 LPI 分數是多少？」
-3. "Show me the top 5 countries by logistics performance" / 「顯示物流表現前五名的國家」
+### 1. Clone the Repository
+```bash
+git clone <your-repo-url>
+cd demo
+```
 
-## Submit / 繳交方式
+### 2. Backend Setup
+Navigate to the server directory and install dependencies:
+```bash
+cd server
+npm install
+```
 
-- Fork this repo, build your solution / Fork 此 repo，建立你的解決方案
-- Include a ~2 min screen recording demo (Loom, QuickTime, OBS, or any tool) / 附上約 2 分鐘的螢幕錄影示範（Loom、QuickTime、OBS 或任何工具皆可）
-- Send your repo link + video to us on 104 within 48 hours of receiving this assignment / 收到此作業後 48 小時內，將 repo 連結與影片寄至 104
+Create a `.env` file in the `server` directory with the following credentials:
+```env
+SUPABASE_URL=https://bqyrjnpwiwldppbkeafk.supabase.co
+SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJxeXJqbnB3aXdsZHBwYmtlYWZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAyMzI0MDcsImV4cCI6MjA4NTgwODQwN30.JmzMN1xU_yhGzW4Ki_d6PpJqkTpVjDHA7dkyen4w6Rg
+OPENROUTER_API_KEY=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
+PORT=3000
+```
+> **Note**: In a production environment, API keys should not be committed to the repository. They are included here only for the ease of this assessment demo.
 
-Any stack is fine. We're looking at: correctness, error handling, code clarity.
+Start the backend server:
+```bash
+node app.js
+```
+The server will run on `http://localhost:3000`.
 
-可使用任何技術棧。評估重點：正確性、錯誤處理、程式碼清晰度。
+### 3. Frontend Setup
+Open a new terminal, navigate to the client directory, and install dependencies:
+```bash
+cd client
+npm install
+```
 
-## Questions? / 有問題嗎？
+Start the frontend development server:
+```bash
+npm run dev
+```
+The application will open at `http://localhost:5173` (or similar port).
 
-If anything is unclear or you run into issues, reach out on 104. The OpenRouter key is shared across candidates — if it stops working, let us know.
+## ✅ Verified Queries
 
-如有任何不清楚或遇到問題，請聯繫 104。OpenRouter key 為所有應徵者共用，若無法使用請告知我們。
+The system has been verified to handle the following requirements:
+1. **"Which countries in Asia have an LPI score above 3.0?"**
+2. **"What's the average LPI score by region?"**
+3. **"Show me the top 5 countries by logistics performance"**
+
+## 🧠 System Logic & Data Handling
+
+### 1. Data Cleaning & Normalization
+The system implements a robust preprocessing layer before any SQL is executed:
+- **Normalization**: All Country and Region names are converted to **Title Case** (e.g., "singapore" -> "Singapore") to ensure consistent matching.
+- **Data Repair**: Handles "dirty" data such as text-based numbers (e.g., converts "three point six" to `3.6`).
+- **Validation**: Automatically filters out rows with `NULL` or invalid LPI scores to prevents calculation errors.
+
+### 2. Smart Year Logic (Defaulting)
+To handle historical data correctly without user complexity:
+- **Default Behavior**: If the user's question **does not specify a year** (e.g., "Top 5 countries"), the system automatically filters for the **latest sensible year** (e.g., 2023). This ensures results are current and prevents duplicate country entries from different years appearing in the list.
+- **Specific Time**: Users can still ask for historical data by explicitly mentioning it (e.g., "Show me the top 5 from 2018"), and the system will respect that constraint.
+
+### 3. Execution Pipeline
+1. **Fetch**: Raw, potentially "dirty" data is fetched from Supabase.
+2. **Clean**: Data passes through the cleaning layer (Normalization + Repair).
+3. **Generate**: LLM converts the natural language question into SQL, injected with specific rules for the cleaned data.
+4. **Execute**: The generated SQL is run against the *clean* in-memory dataset using Alasql.
+
+

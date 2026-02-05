@@ -1,0 +1,12 @@
+# General
+.DS_Store
+.vscode/
+.idea/
+
+# Node
+node_modules/
+
+# Logs
+*.log
+
+
